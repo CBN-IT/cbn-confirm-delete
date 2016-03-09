@@ -1,0 +1,107 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-button/paper-button.html">
+
+<link rel="import" href="../cbn-main-page/cbn-page-behavior.html">
+<link rel="import" href="../cbn-grid/cbn-btn-styles.html">
+
+<dom-module id="cbn-confirm-delete">
+	<template>
+		<style>
+			.modal-buttons {
+				margin-bottom: 15px;
+				margin-top: 20px;
+				display: flex;
+				justify-content: space-around;
+			}
+
+			.header-dialog {
+				text-align: center;
+				font-size: 18px;
+				font-weight: bold;
+			}
+		</style>
+		<style include="cbn-btn-styles"></style>
+		
+		<iron-ajax id="deleteEntity" url="{{url}}" handle-as="json" params='{{_setParams("namespace",namespace,"hash", _hash)}}' on-response="_deletedEntity"></iron-ajax>
+		
+		<paper-dialog id="dialog" class="dialog-delete" entry-animation="scale-up-animation" exit-animation="fade-out-animation" modal>
+			<div class="header-dialog">
+				{{_mesajOnDelete}}
+			</div>
+			<div class="modal-buttons">
+				<paper-button dialog-dismiss class="icon-btn grey" >
+					<iron-icon icon="close" class="icon-btn-icon"></iron-icon>
+					<span class="icon-btn-text">Anuleaza</span>
+				</paper-button>
+				<paper-button class="icon-btn red" on-tap="confirmDelete">
+					<iron-icon icon="delete" class="icon-btn-icon"></iron-icon>
+					<span class="icon-btn-text">Sterge</span>
+				</paper-button>
+			</div>
+		</paper-dialog>
+	</template>
+</dom-module>
+
+<script>
+	(function () {
+		Polymer({
+
+			is: 'cbn-confirm-delete',
+			behaviors: [
+				Cbn.facturi.pageBehavior
+			],
+			properties: {
+				_mesajOnDelete: {
+					type: String
+				},
+				namespace: {
+					type: String
+				},
+				_hash: {
+					type: String
+				},
+				_callback: {
+					type: Function
+				},
+				url: {
+					type: String,
+					value: "/delete/DeleteEntity"
+				}
+			},
+			attached: function () {
+				this.listen(document, "cbn-confirm-delete", "_listenForMessages");
+			},
+			detached: function () {
+				this.unlisten(document, "cbn-confirm-delete", "_listenForMessages");
+			},
+			_deletedEntity:function(args){
+				this.close();
+				this._callback(args);
+			},
+			confirmDelete: function(){
+				this.$.deleteEntity.generateRequest();
+			},
+			open: function () {
+				this.$.dialog.open();
+			},
+			close: function () {
+				this.$.dialog.close();
+			},
+			_listenForMessages: function (event) {
+				this.delete(event.detail.hash, event.detail.mesaj, event.detail.callback, event.detail.url);
+			},
+			delete: function (hash, mesajOnDelete, callback, url) {
+				this._hash = hash;
+				this._mesajOnDelete = mesajOnDelete;
+				this._callback = callback;
+				this.url = url || "/delete/DeleteEntity";
+				this.open();
+			}
+		})
+	})();
+</script>
