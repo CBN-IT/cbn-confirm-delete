@@ -1,6 +1,6 @@
 {
     "name": "cbn-confirm-delete",
-    "version": "1.0",
+    "version": "1.0.0",
     "main": "cbn-confirm-delete.html",
     "ignore": [
         "**/.*",
@@ -12,14 +12,14 @@
         "src"
     ],
     "dependencies": {
-        "polymer": "Polymer/polymer#1.3.1",
-        "cbn-main-page": "git@bitbucket.org:cbn-it/cbn-main-page#master",
-        "cbn-grid": "git@bitbucket.org:cbn-it/cbn-grid#master",
-        "paper-dialog": "PolymerElements/paper-dialog#1.0.4",
-        "paper-button": "PolymerElements/paper-button#1.0.11",
-        "iron-ajax": "PolymerElements/iron-ajax#1.2.0",
-        "iron-icon": "PolymerElements/iron-icon#1.0.8",
-        "iron-icons": "PolymerElements/iron-icons#1.1.3"
+        "polymer": "Polymer/polymer#^1.3.1",
+        "paper-dialog": "PolymerElements/paper-dialog#^1.0.4",
+        "paper-button": "PolymerElements/paper-button#^1.0.11",
+        "iron-ajax": "PolymerElements/iron-ajax#^1.2.0",
+        "iron-icon": "PolymerElements/iron-icon#^1.0.8",
+        "iron-icons": "PolymerElements/iron-icons#^1.1.3",
+        "cbn-main-page": "CBN-IT/cbn-main-page#master",
+        "cbn-grid": "CBN-IT/cbn-grid#master"
     },
     "devDependencies": {}
 }
