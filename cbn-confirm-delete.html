@@ -1,0 +1,108 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/cbn-btn-styles/cbn-btn-styles.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+
+<dom-module id="cbn-confirm-delete">
+    <template>
+        <style include="cbn-btn-styles iron-flex iron-flex-alignment">
+            :host {
+                display: block;
+            }
+            .fit {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: rgba(0, 0, 0, .43);
+                z-index: 1;
+            }
+
+            .form-container {
+                background: white;
+                padding: 10px;
+                box-sizing: border-box;
+                border-radius: 4px
+            }
+            div[hidden] {
+                display: none !important;
+            }
+        </style>
+        <iron-ajax id="delete" url="{{detail.url}}?_hash={{detail._hash}}&namespace={{namespace}}" on-response="deleted"></iron-ajax>
+        <div class="fit vertical layout center center-justified" hidden$="{{hidden}}">
+            <div class="form-container vertical layout">
+                <h2>Are you sure you want to perform this action?</h2>
+                <div class="horizontal layout justified">
+                    <button class="icon-btn ripple background grey margin" on-click="cancel">
+                        <iron-icon icon="close"></iron-icon>
+                        <span>Cancel</span>
+                    </button>
+                    <button class="icon-btn ripple background red margin" on-click="delete">
+                        <iron-icon icon="check"></iron-icon>
+                        <span>Confirm</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </template>
+
+    <script>
+        class CbnConfirmDelete extends Polymer.Element {
+            static get is() {
+                return 'cbn-confirm-delete';
+            }
+
+            static get properties() {
+                return {
+                    namespace: {
+                        type: String,
+                        value: function(){
+                            return window["namespace"]
+                        }
+                    },
+                    hidden: {
+                        type: Boolean,
+                        value: true
+                    },
+                    detail: {
+                        type: Object
+                    }
+                };
+            }
+
+            connectedCallback(){
+                super.connectedCallback();
+                document.addEventListener("cbn-confirm-delete", this.openToConfirm.bind(this), true);
+            }
+
+            openToConfirm(event){
+                this.hidden = false;
+                event.detail.url = event.detail.url !== undefined ? event.detail.url : "/delete/DeleteEntity";
+                this.detail = event.detail;
+            }
+
+            delete(){
+                if(this.detail["noAjax"]){
+                    this.detail.callback(this.detail);
+                } else {
+                    this.$.delete.generateRequest();
+                }
+            }
+
+            deleted(){
+                this.cancel();
+                this.detail.callback(this.detail);
+            }
+
+            cancel(){
+                this.hidden = true;
+            }
+
+        }
+
+        window.customElements.define(CbnConfirmDelete.is, CbnConfirmDelete);
+    </script>
+</dom-module>
